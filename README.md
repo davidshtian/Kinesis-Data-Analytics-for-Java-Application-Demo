@@ -201,7 +201,7 @@ kinesis_java/
 
 这里的pom.xml文件使用maven-shade插件生成一个包含其所需依赖项的jar，即*fat jar*，如果需要，可以使用任何其他生成包含依赖项的jar的插件。Kinesis Data Analytics for Java Applications在aws-kinesisanalytics-runtime库中为应用程序提供资源，该库包含Kinesis Analytics Java流处理运行时配置类。
 
-**注：要将Kinesis连接器用于以下应用程序，需要下载连接器的源代码并按照[Apache Flink文档](https://ci.apache.org/projects/flink/flink-docs-stable/dev/connectors/kinesis.html)中的说明进行构建，参考操作步骤如下。如果直接使用Maven编译会报错找不到对应的库。
+**注：要将Kinesis连接器用于以下应用程序，需要下载连接器的源代码并按照[Apache Flink文档](https://ci.apache.org/projects/flink/flink-docs-stable/dev/connectors/kinesis.html)中的说明进行构建，参考操作步骤如下。如果直接使用Maven编译会报错找不到对应的库。**
 
 * 首先下载Flink源码包并解压：
 ```
@@ -407,4 +407,4 @@ aws s3 cp target/java-getting-started-1.0.jar s3://<your s3 bucket>/path/to/jar
 
 
 
-**注：可以根据自己的实际情况清理资源（Kinesis、S3、IAM等）。
+**注：可以根据自己的实际情况清理资源（Kinesis、S3、IAM等）。**
