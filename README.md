@@ -403,8 +403,50 @@ aws s3 cp target/java-getting-started-1.0.jar s3://<your s3 bucket>/path/to/jar
 ![](./images/graph.png)
 
 ### 6.查看处理结果
-最后，到Kinesis数据流中查看处理结果。
+最后，到Kinesis数据流中查看处理结果，这里使用AWS CLI进行查看。
 
+首先，查看输出流ExampleOutputStream的shard，有关Kinesis的相关概念，请参考[这里](https://docs.aws.amazon.com/streams/latest/dev/key-concepts.html)。
+```
+$ aws kinesis get-shard-iterator --shard-id shardId-000000000000 --shard-iterator-type TRIM_HORIZON --stream-name ExampleOutputStream
+{
+    "ShardIterator": "AAAAAAAAAAGk6dLJmmkGCZf4Jb5ND1U/fNJKe9RtNf2NTsV604xTVTBn7xXprSuo6hbdx8Cyfx5lmcLOHkccIlh/jwXpqbNncHa+sJTMK4s6SpT0aFa3OChXBbRdNi3T7+1A4lWbGLQDYGs6nibols/T4ycDlWOb/yYl52zcac37sX13AQiX8l8oZnXaBz1lcoDzMTNpyAv7uJwaf7y6vpVoyWQ6s10at/8EHgrZEgGfaYvQErHANA=="
+}
+```
 
+然后使用刚刚的iterator获取流数据：
+```
+aws kinesis get-records --shard-iterator AAAAAAAAAAGk6dLJmmkGCZf4Jb5ND1U/fNJKe9RtNf2NTsV604xTVTBn7xXprSuo6hbdx8Cyfx5lmcLOHkccIlh/jwXpqbNncHa+sJTMK4s6SpT0aFa3OChXBbRdNi3T7+1A4lWbGLQDYGs6nibols/T4ycDlWOb/yYl52zcac37sX13AQiX8l8oZnXaBz1lcoDzMTNpyAv7uJwaf7y6vpVoyWQ6s10at/8EHgrZEgGfaYvQErHANA==
+```
+可以看到输出信息类似以下内容：
+```
+        ...
+        
+        {
+            "Data": "eyJQUklDRSI6ICIyNi43MiIsICJUSUNLRVIiOiAiSU5UQyJ9", 
+            "PartitionKey": "0", 
+            "ApproximateArrivalTimestamp": 1544272509.374, 
+            "SequenceNumber": "49590869158258093356086549590436069091686336058884096002"
+        }, 
+        {
+            "Data": "eyJQUklDRSI6ICI0Ny43OSIsICJUSUNLRVIiOiAiSU5UQyJ9", 
+            "PartitionKey": "0", 
+            "ApproximateArrivalTimestamp": 1544272509.374, 
+            "SequenceNumber": "49590869158258093356086549590437278017505950688058802178"
+        }, 
+        {
+            "Data": "eyJQUklDRSI6ICIxMy4xIiwgIlRJQ0tFUiI6ICJBQVBMIn0=", 
+            "PartitionKey": "0", 
+            "ApproximateArrivalTimestamp": 1544272509.374, 
+            "SequenceNumber": "49590869158258093356086549590438486943325565317233508354"
+        }
+        
+        ...
+```
+
+数据是经过base64编码，可以通过程序进行解码：
+```
+$ echo "eyJQUklDRSI6ICI0Ny43OSIsICJUSUNLRVIiOiAiSU5UQyJ9" | base64 -d
+{"PRICE": "47.79", "TICKER": "INTC"}
+```
 
 **注：可以根据自己的实际情况清理资源（Kinesis、S3、IAM等）。**
