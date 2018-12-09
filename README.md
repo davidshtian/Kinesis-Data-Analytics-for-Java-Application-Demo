@@ -1,4 +1,4 @@
-# Kinesis-Data-Analytics-for-Java-Application-Demo
+# Kinesis Data Analytics for Java Application Demo
 
 借助Amazon Kinesis Data Analytics for Java Applications，AWS用户可以使用Java程序来处理和分析流数据，该服务使得用户能够快速创建和运行针对流数据的Java代码，用来做时间序列分析，或者提供实时仪表板、创建实时指标等。
 
