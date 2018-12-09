@@ -201,7 +201,7 @@ kinesis_java/
 
 这里的pom.xml文件使用maven-shade插件生成一个包含其所需依赖项的jar，即*fat jar*，如果需要，可以使用任何其他生成包含依赖项的jar的插件。Kinesis Data Analytics for Java Applications在aws-kinesisanalytics-runtime库中为应用程序提供资源，该库包含Kinesis Analytics Java流处理运行时配置类。
 
-**注：要将Kinesis连接器用于以下应用程序，需要下载连接器的源代码并按照[Apache Flink文档](https://ci.apache.org/projects/flink/flink-docs-stable/dev/connectors/kinesis.html)中的说明进行构建，参考操作步骤如下。如果直接使用Maven编译会报错找不到对应的库。
+**注：要将Kinesis连接器用于以下应用程序，需要下载连接器的源代码并按照[Apache Flink文档](https://ci.apache.org/projects/flink/flink-docs-stable/dev/connectors/kinesis.html)中的说明进行构建，参考操作步骤如下。如果直接使用Maven编译会报错找不到对应的库。**
 
 * 首先下载Flink源码包并解压：
 ```
@@ -403,8 +403,53 @@ aws s3 cp target/java-getting-started-1.0.jar s3://<your s3 bucket>/path/to/jar
 ![](./images/graph.png)
 
 ### 6.查看处理结果
-最后，到Kinesis数据流中查看处理结果。
+最后，到Kinesis数据流中查看处理结果，这里使用AWS CLI进行查看。
 
+首先，查看输出流ExampleOutputStream的shard，有关Kinesis的相关概念，请参考[这里](https://docs.aws.amazon.com/streams/latest/dev/key-concepts.html)。
+```
+$ aws kinesis get-shard-iterator --shard-id shardId-000000000000 --shard-iterator-type TRIM_HORIZON --stream-name ExampleOutputStream
+{
+    "ShardIterator": "AAAAAAAAAAGk6dLJmmkGCZf4Jb5ND1U/fNJKe9RtNf2NTsV604xTVTBn7xXprSuo6hbdx8Cyfx5lmcLOHkccIlh/jwXpqbNncHa+sJTMK4s6SpT0aFa3OChXBbRdNi3T7+1A4lWbGLQDYGs6nibols/T4ycDlWOb/yYl52zcac37sX13AQiX8l8oZnXaBz1lcoDzMTNpyAv7uJwaf7y6vpVoyWQ6s10at/8EHgrZEgGfaYvQErHANA=="
+}
+```
 
+然后使用刚刚的iterator获取流数据：
+```
+aws kinesis get-records --shard-iterator AAAAAAAAAAGk6dLJmmkGCZf4Jb5ND1U/fNJKe9RtNf2NTsV604xTVTBn7xXprSuo6hbdx8Cyfx5lmcLOHkccIlh/jwXpqbNncHa+sJTMK4s6SpT0aFa3OChXBbRdNi3T7+1A4lWbGLQDYGs6nibols/T4ycDlWOb/yYl52zcac37sX13AQiX8l8oZnXaBz1lcoDzMTNpyAv7uJwaf7y6vpVoyWQ6s10at/8EHgrZEgGfaYvQErHANA==
+```
+可以看到输出信息类似以下内容：
+```
+        ...
+        
+        {
+            "Data": "eyJQUklDRSI6ICIyNi43MiIsICJUSUNLRVIiOiAiSU5UQyJ9", 
+            "PartitionKey": "0", 
+            "ApproximateArrivalTimestamp": 1544272509.374, 
+            "SequenceNumber": "49590869158258093356086549590436069091686336058884096002"
+        }, 
+        {
+            "Data": "eyJQUklDRSI6ICI0Ny43OSIsICJUSUNLRVIiOiAiSU5UQyJ9", 
+            "PartitionKey": "0", 
+            "ApproximateArrivalTimestamp": 1544272509.374, 
+            "SequenceNumber": "49590869158258093356086549590437278017505950688058802178"
+        }, 
+        {
+            "Data": "eyJQUklDRSI6ICIxMy4xIiwgIlRJQ0tFUiI6ICJBQVBMIn0=", 
+            "PartitionKey": "0", 
+            "ApproximateArrivalTimestamp": 1544272509.374, 
+            "SequenceNumber": "49590869158258093356086549590438486943325565317233508354"
+        }
+        
+        ...
+```
 
-**注：可以根据自己的实际情况清理资源（Kinesis、S3、IAM等）。
+数据是经过base64编码，可以通过程序进行解码：
+```
+$ echo "eyJQUklDRSI6ICI0Ny43OSIsICJUSUNLRVIiOiAiSU5UQyJ9" | base64 -d
+{"PRICE": "47.79", "TICKER": "INTC"}
+```
+
+### 小结
+Kinesis Data Analytics for Java Application充分利用Flink流处理框架，可以让用户在流数据处理方面变得更加的灵活，同时用户也无需管理底层的基础设施，AWS会根据负载弹性地扩展，极大地减轻了运维负担。本示例作为学习Kinesis Data Analytics for Java Application的一个基本参考，读者可以根据上述示例代码进行更多更高级的自定义开发。
+
+**注：可以根据自己的实际情况清理资源（Kinesis、S3、IAM等）。**
