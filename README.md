@@ -453,3 +453,8 @@ $ echo "eyJQUklDRSI6ICI0Ny43OSIsICJUSUNLRVIiOiAiSU5UQyJ9" | base64 -d
 Kinesis Data Analytics for Java Application充分利用Flink流处理框架，可以让用户在流数据处理方面变得更加的灵活，同时用户也无需管理底层的基础设施，AWS会根据负载弹性地扩展，极大地减轻了运维负担。本示例作为学习Kinesis Data Analytics for Java Application的一个基本参考，读者可以根据上述示例代码进行更多更高级的自定义开发。
 
 **注：可以根据自己的实际情况清理资源（Kinesis、S3、IAM等）。**
+
+### 参考文档：
+- 概念介绍：https://docs.aws.amazon.com/kinesisanalytics/latest/java/what-is.html
+- 入门指南：https://docs.aws.amazon.com/kinesisanalytics/latest/java/getting-started.html
+- Flink Kinesis连接器：https://ci.apache.org/projects/flink/flink-docs-stable/dev/connectors/kinesis.html
