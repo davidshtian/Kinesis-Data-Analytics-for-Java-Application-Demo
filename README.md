@@ -5,3 +5,10 @@
 用户可以使用基于Apache Flink（一种用于处理数据流的流行框架和引擎）的开源库在Kinesis Data Analytics中构建Java应用程序。Kinesis Data Analytics服务为Flink应用程序提供底层基础架构，处理核心组件，如配置计算资源、并行计算、自动扩展和应用程序备份（检查点和快照）。用户可以使用Flink高阶编程功能如operator，source和sink，与自己托管的Apache Flink使用方式完全相同。
 
 要开始使用Kinesis Data Analytics for Java Applications，首先需要创建一个Kinesis Data Analytics应用程序，该应用程序可以连续读取和处理流数据，然后，依照用户的习惯选择熟悉的IDE编写Java代码，并使用实时流数据进行测试，最后将代码部署到AWS平台。
+
+本示例是依据官方文档中的Getting Started进行编写，供读者参考。实验一共包括以下几个步骤：
+* 创建Kinesis Data Streams作为数据源和目的
+* 传输示例数据到输入流
+* 编写Flink Streaming Java代码并编译
+* 上传Flink Streaming Java代码到S3
+* 创建并运行Kinesis Data Analytics Application
